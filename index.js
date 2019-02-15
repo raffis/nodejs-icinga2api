@@ -23,13 +23,13 @@ icingaapi.prototype.getServices = function (callback) {
         rejectUnauthorized: false,
         auth: self.user + ":" + self.pass,
     }
-
+    
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             state = {
                 "Statuscode": res.statusCode,
                 "StatusMessage": res.statusMessage,
-                "Statecustom": successMesage
+                "Statecustom": buffer
             }
         });
     });
@@ -68,7 +68,8 @@ icingaapi.prototype.getHosts = function (callback) {
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(statusMessage.toString('utf-8'))
                 }, null);
             }
 
@@ -151,6 +152,7 @@ icingaapi.prototype.getServiceFiltered = function (filter, callback) {
             }
         })
     });
+  console.log(JSON.stringify(filter));
     req.end(JSON.stringify(filter));
 }
 
@@ -169,11 +171,11 @@ icingaapi.prototype.getService = function (ServerName, ServiceName, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             state = {
                 "Statuscode": res.statusCode,
                 "StatusMessage": res.statusMessage,
-                "Statecustom": successMesage
+                "Statecustom": buffer
             }
         });
     });
@@ -218,7 +220,8 @@ icingaapi.prototype.getHost = function (ServerName, callback) {
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(d.toString('utf-8'))
                 }, null);
             }
 
@@ -261,7 +264,8 @@ icingaapi.prototype.getServiceWithState = function (state, callback) {
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(d.toString('utf-8'))
                 }, null);
             }
         });
@@ -311,11 +315,11 @@ icingaapi.prototype.createService = function (template, host, service, displayna
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             state = {
                 "Statuscode": res.statusCode,
                 "StatusMessage": res.statusMessage,
-                "Statecustom": successMesage
+                "Statecustom": buffer
             }
         });
     });
@@ -350,13 +354,14 @@ icingaapi.prototype.createServiceCustom = function (serviceObj, host, service, c
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
         });
@@ -390,7 +395,8 @@ icingaapi.prototype.createHostCustom = function (hostObj, host, callback) {
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(statusMessage.toString('utf-8'))
                 }, null);
             }
         });
@@ -453,13 +459,14 @@ icingaapi.prototype.deleteService = function (service, host, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + stateMessage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
 
@@ -489,7 +496,7 @@ icingaapi.prototype.setHostDowntime = function (dObj, hostname, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 'StatusCode': res.statusCode,
                 'StatusMessage': res.statusMessage,
@@ -531,7 +538,7 @@ icingaapi.prototype.setFilteredDowntime = function (dFilter, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 'StatusCode': res.statusCode,
                 'StatusMessage': res.statusMessage,
@@ -573,7 +580,7 @@ icingaapi.prototype.removeFilteredDowntime = function (dFilter, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 'StatusCode': res.statusCode,
                 'StatusMessage': res.statusMessage,
@@ -622,7 +629,7 @@ icingaapi.prototype.disableHostNotification = function (hostname, callback) {
     }
 
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 'StatusCode': res.statusCode,
                 'StatusMessage': res.statusMessage,
@@ -672,11 +679,11 @@ icingaapi.prototype.setHostState = function (host, hostState, StateMessage, call
         }
     }
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 "Statuscode": res.statusCode,
                 "StatusMessage": res.statusMessage,
-                "Statecustom": stateMessage
+                "Statecustom": buffer
             }
         });
     });
@@ -733,11 +740,11 @@ icingaapi.prototype.setServiceState = function (service, host, serviceState, ser
         }
     }
     var req = https.request(options, (res) => {
-        res.on('data', (stateMessage) => {
+        res.on('data', (buffer) => {
             statemess = {
                 "Statuscode": res.statusCode,
                 "StatusMessage": res.statusMessage,
-                "Statecustom": stateMessage
+                "Statecustom": buffer
             }
         });
     });
@@ -931,9 +938,9 @@ icingaapi.prototype.updateServiceAttr = function (serviceObj, host, service, cal
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
@@ -1032,7 +1039,8 @@ icingaapi.prototype.getHostTemplates = function (callback) {
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(d.toString('utf-8'))
                 }, null);
             }
 
@@ -1094,13 +1102,14 @@ icingaapi.prototype.getCheckCommand = function (checkCommand, callback) {
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
         });
@@ -1128,13 +1137,14 @@ icingaapi.prototype.getHostGroup = function (hostGroup, callback) {
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
         });
@@ -1169,13 +1179,14 @@ icingaapi.prototype.createHostGroup = function (hostGroup, displayname, groups, 
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
         });
@@ -1203,9 +1214,9 @@ icingaapi.prototype.getServiceGroup = function (serviceGroup, callback) {
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
@@ -1244,13 +1255,14 @@ icingaapi.prototype.createServiceGroup = function (serviceGroup, displayname, gr
         }
     };
     var req = https.request(options, (res) => {
-        res.on('data', (successMesage) => {
+        res.on('data', (buffer) => {
             if (res.statusCode == "200") {
-                return callback(null, "" + successMesage);
+                return callback(null, "" + buffer);
             } else {
                 return callback({
                     "Statuscode": res.statusCode,
-                    "StatusMessage": res.statusMessage
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
                 }, null);
             }
         });
