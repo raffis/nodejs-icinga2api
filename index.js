@@ -1273,5 +1273,39 @@ icingaapi.prototype.createServiceGroup = function (serviceGroup, displayname, gr
         return callback(e, null);
     });
 }
+icingaapi.prototype.restartProcess = function (callback) {
+    var self = this;
+
+    var options = {
+        hostname: self.url,
+        timeout: self.timeout,
+        port: self.port,
+        path: '/v1/actions/restart-process',
+        rejectUnauthorized: false,
+        auth: self.user + ":" + self.pass,
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+        }
+    };
+    var req = https.request(options, (res) => {
+        res.on('data', (buffer) => {
+            if (res.statusCode == "200") {
+                return callback(null, "" + buffer);
+            } else {
+                return callback({
+                    "Statuscode": res.statusCode,
+                    "StatusMessage": res.statusMessage,
+                    "body": JSON.parse(buffer.toString('utf-8'))
+                }, null);
+            }
+        });
+    });
+    req.end();
+
+    req.on('error', (e) => {
+        return callback(e, null);
+    });
+}
 
 module.exports = icingaapi;
