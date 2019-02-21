@@ -152,7 +152,7 @@ icingaapi.prototype.getServiceFiltered = function (filter, callback) {
             }
         })
     });
-  console.log(JSON.stringify(filter));
+    
     req.end(JSON.stringify(filter));
 }
 
